@@ -16,6 +16,7 @@ EXCEPTIONS = (
     "Mingw haskell shell",
     "MuseScore 4",
     "SideQuest",
+    # etc...
 )
 ```
 These exceptions are case-insensitive, and should not include the `.lnk` shortcut extension.
