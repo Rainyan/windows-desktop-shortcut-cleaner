@@ -55,7 +55,7 @@ def get_desktop_path():
     )
 
 
-def main(verbose=True):
+def main(dry_run, verbose=True):
     """Entry point"""
     desktop_path = get_desktop_path()
     assert os.path.isdir(desktop_path)
@@ -67,9 +67,9 @@ def main(verbose=True):
             continue
         if is_in_exceptions(f):
             continue
-        remove_file(os.path.join(desktop_path, f), DRY_RUN)
+        remove_file(os.path.join(desktop_path, f), dry_run)
         removed.append(f)
-    if verbose:
+    if verbose and not dry_run:
         print(f"Cleaned {len(removed)} desktop shortcut(s)")
         for f in removed:
             print(f'- "{os.path.join(desktop_path, f)}"')
@@ -84,4 +84,4 @@ def remove_file(f, dry_run):
 
 
 if __name__ == "__main__":
-    main()
+    main(DRY_RUN)
