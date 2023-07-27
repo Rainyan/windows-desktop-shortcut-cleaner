@@ -4,13 +4,14 @@ Python 3 script for Windows that removes all shortcuts from the user's Desktop f
 A lot of Windows apps will create shortcuts on the desktop without asking the user. Scheduling this script will help keeping the desktop clean automatically.
 
 # Usage
-Assuming "python" is in PATH and refers to your Python executable.
 
-## Running the script
-Type in your command prompt
-`python src\cleaner.py`
+## One-time run
+Assuming the correct "python" version is callable from PATH in this example
+```cmd
+python src\cleaner.py
+```
 
-## Scheduling the script
+## Scheduling
 Open Powershell as current user, and enter:
 ```ps1
 # Set your python path and the script path here.
