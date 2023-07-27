@@ -51,7 +51,9 @@ python src\cleaner.py
 ```
 
 ## Scheduling
-Open Powershell as current user, and enter:
+
+### Powershell
+#### Add the scheduled task
 ```ps1
 # Set your python path and the script path here.
 # Note that you can use "pythonw" instead of "python" in Windows
@@ -71,6 +73,13 @@ Register-ScheduledTask -Action $action -Trigger $trigger -Settings $settings `
   -TaskName "Cleanup Desktop Shortcuts" `
   -Description "Removes unwanted .lnk shortcuts from the user's Desktop folder."
 ```
+#### Remove the scheduled task
+```ps1
+Unregister-ScheduledTask -TaskName "Cleanup Desktop Shortcuts"
+```
+
+### Task Scheduler
+If you'd prefer a graphical user interface, you can instead use the *Task Scheduler* app, which comes preinstalled with most Windows systems.
 
 ## Contributing
 PRs welcome!
