@@ -54,6 +54,11 @@ python src\cleaner.py
 
 ### Powershell
 #### Add the scheduled task
+
+
+[!NOTE]  
+You may have to modify the file paths in this snippet to match your system.
+
 ```ps1
 # Set your python path and the script path here.
 # Note that you can use "pythonw" instead of "python" in Windows
