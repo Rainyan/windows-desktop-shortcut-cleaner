@@ -16,7 +16,7 @@ Open Powershell as current user, and enter:
 ```ps1
 # Set your python path and the script path here.
 # Note that you can use "pythonw" instead of "python" in Windows
-# to prevent the console window popup for bg tasks.
+# to prevent the console window popup for background tasks.
 $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
   -Argument "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src\cleaner.py"
