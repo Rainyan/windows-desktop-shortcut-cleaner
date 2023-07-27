@@ -39,6 +39,9 @@ EXCEPTIONS = (
     "SideQuest",
 )
 
+# Flip this to False to actually remove the files!
+DRY_RUN = True
+
 
 def is_in_exceptions(x):
     """Return whether x (sans .lnk extension, case insensitive) is in EXCEPTIONS"""
@@ -64,7 +67,7 @@ def main(verbose=True):
             continue
         if is_in_exceptions(f):
             continue
-        remove_file(os.path.join(desktop_path, f))
+        remove_file(os.path.join(desktop_path, f), DRY_RUN)
         removed.append(f)
     if verbose:
         print(f"Cleaned {len(removed)} desktop shortcut(s)")
@@ -72,7 +75,7 @@ def main(verbose=True):
             print(f'- "{os.path.join(desktop_path, f)}"')
 
 
-def remove_file(f, dry_run=False):
+def remove_file(f, dry_run):
     """Remove a file, with optional dry_run option for debug"""
     if dry_run:
         print(f'[Dry-run] Would remove: "{f}"')
