@@ -5,7 +5,7 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 
 # Requirements
 * Modern-ish version of Windows (newer than Vista should work)
-* Modern-ish version of Python 3
+* Modern-ish version of Python 3 (tested with 3.11)
 
 # Install
 Get the code:
