@@ -3,8 +3,21 @@ Python 3 script for Windows that removes all shortcuts from the user's Desktop f
 
 A lot of Windows apps will create shortcuts on the desktop without asking the user. Scheduling this script will help keeping the desktop clean automatically.
 
-# Usage
+# Install
+Get the code:
+```cmd
+git clone https://github.com/Rainyan/windows-desktop-shortcut-cleaner
+```
 
+Try the [one-time run](#one-time-run) to do a dry-run of the script, which will just print what would have been deleted instead of actually deleting it.
+
+If you're happy with the output, flip the dry-run switch off in code to start deleting things for real:
+```py
+# Flip this to False to actually remove the files!
+DRY_RUN = True
+```
+
+# Usage
 ## Exceptions
 You can customize the list of shortcuts that will be preserved by modifying the EXCEPTIONS global in the source code:
 ```py
