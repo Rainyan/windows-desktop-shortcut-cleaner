@@ -5,6 +5,21 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 
 # Usage
 
+## Exceptions
+You can customize the list of shortcuts that will be preserved by modifying the EXCEPTIONS global in the source code:
+```py
+# Never delete shortcuts with these names
+EXCEPTIONS = (
+    "ALVR",
+    "AutoProcPrio with better rules",
+    "Install GHC dev dependencies",
+    "Mingw haskell shell",
+    "MuseScore 4",
+    "SideQuest",
+)
+```
+These exceptions are case-insensitive, and should not include the `.lnk` shortcut extension.
+
 ## One-time run
 Assuming the correct "python" version is callable from PATH in this example
 ```cmd
