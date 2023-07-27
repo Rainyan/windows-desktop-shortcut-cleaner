@@ -21,6 +21,8 @@ $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
   -Argument "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src\cleaner.py"
 
+# Scheduling a daily cleanup at 6 AM here, see the docs for customizing:
+# https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtasktrigger
 $trigger = New-ScheduledTaskTrigger -Daily -At 6:00am
 $trigger.StartBoundary = [DateTime]::Parse($trigger.StartBoundary).ToLocalTime().ToString("s")
 
