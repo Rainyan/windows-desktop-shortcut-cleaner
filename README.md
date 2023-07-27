@@ -20,7 +20,7 @@ $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
   -Argument "C:\code\windows-desktop-shortcut-cleaner\src\cleaner.py"
 
-$trigger = New-ScheduledTaskTrigger -Daily -At 6:00pm
+$trigger = New-ScheduledTaskTrigger -Daily -At 6:00am
 $trigger.StartBoundary = [DateTime]::Parse($trigger.StartBoundary).ToLocalTime().ToString("s")
 
 $settings = New-ScheduledTaskSettingsSet
