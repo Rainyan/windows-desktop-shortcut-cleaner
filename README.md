@@ -72,6 +72,12 @@ Register-ScheduledTask -Action $action -Trigger $trigger -Settings $settings `
   -Description "Removes unwanted .lnk shortcuts from the user's Desktop folder."
 ```
 
+## Contributing
+PRs welcome!
+
+* Please format your code with [black](https://github.com/psf/black).
+* If you're making substantial changes, please open an issue for discussing them before submitting a patch.
+
 ## Acknowledgements
 This script was made possible by this useful utility: https://gist.github.com/mkropat/7550097,
 included and used here under the MIT License.
