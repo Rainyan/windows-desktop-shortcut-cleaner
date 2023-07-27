@@ -56,8 +56,9 @@ python src\cleaner.py
 #### Add the scheduled task
 
 
-[!NOTE]<br>
-You may have to modify the file paths in this snippet to match your system.
+> [!NOTE]  
+> You may have to modify the file paths in this snippet to match your system.
+
 
 ```ps1
 # Set your python path and the script path here.
