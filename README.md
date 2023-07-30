@@ -91,6 +91,7 @@ If you'd prefer a graphical user interface, you can instead use the *Task Schedu
 PRs welcome!
 
 * Please format your code with [black](https://github.com/psf/black).
+  * The `src/thirdparty` directory is exempt from this rule.
 * If you're making substantial changes, please open an issue for discussing them before submitting a patch.
 
 ## Acknowledgements
