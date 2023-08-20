@@ -41,6 +41,10 @@ EXCEPTIONS = (
 
 # Flip this to False to actually remove the files!
 DRY_RUN = True
+# Whether to also clean the public desktop (visible to all users)
+INCLUDE_PUBLIC_DESKTOP = True
+# Print extra info to stdout
+VERBOSE = True
 
 
 def is_in_exceptions(x):
@@ -48,32 +52,43 @@ def is_in_exceptions(x):
     return x.split(".lnk")[0].lower() in (a.lower() for a in EXCEPTIONS)
 
 
-def get_desktop_path():
+def get_known_path(folderid):
     """Get the Desktop path of the current user"""
     return kp.get_path(
-        getattr(kp.FOLDERID, "Desktop"), getattr(kp.UserHandle, "current")
+        getattr(kp.FOLDERID, folderid), getattr(kp.UserHandle, "current")
     )
 
 
-def main(dry_run, verbose=True):
+def main(dry_run, include_public_desktop, verbose):
     """Entry point"""
-    desktop_path = get_desktop_path()
-    assert os.path.isdir(desktop_path)
-    removed = []
-    for f in os.listdir(desktop_path):
-        full_path = os.path.join(desktop_path, f)
-        if any((os.path.islink(full_path), os.path.isdir(full_path))):
-            continue
-        if not f.endswith(".lnk"):
-            continue
-        if is_in_exceptions(f):
-            continue
-        remove_file(os.path.join(desktop_path, f), dry_run)
-        removed.append(f)
-    if verbose and not dry_run:
-        print(f"Cleaned {len(removed)} desktop shortcut(s)")
-        for f in removed:
-            print(f'- "{os.path.join(desktop_path, f)}"')
+    desktop_paths = [get_known_path("Desktop")]
+    if include_public_desktop:
+        desktop_paths.append(get_known_path("PublicDesktop"))
+
+    if verbose:
+        print(f"{len(desktop_paths)} desktop paths total: {desktop_paths}")
+
+    for desktop_path in desktop_paths:
+        if verbose:
+            print(f'Checking desktop path: "{desktop_path}"')
+        assert os.path.isdir(desktop_path)
+        removed = []
+        for f in os.listdir(desktop_path):
+            full_path = os.path.join(desktop_path, f)
+            if any((os.path.islink(full_path), os.path.isdir(full_path))):
+                continue
+            if not f.endswith(".lnk"):
+                continue
+            if is_in_exceptions(f):
+                continue
+            remove_file(full_path, dry_run)
+            removed.append(f)
+        if verbose:
+            print(
+                f"{'[Dry-run] Would remove' if dry_run else 'Removed'} {len(removed)} desktop shortcut(s)."
+            )
+            for f in removed:
+                print(f'- "{os.path.join(desktop_path, f)}"')
 
 
 def remove_file(f, dry_run):
@@ -85,4 +100,4 @@ def remove_file(f, dry_run):
 
 
 if __name__ == "__main__":
-    main(DRY_RUN)
+    main(DRY_RUN, INCLUDE_PUBLIC_DESKTOP, VERBOSE)
