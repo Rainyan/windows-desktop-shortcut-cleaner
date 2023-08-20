@@ -40,7 +40,7 @@ EXCEPTIONS = (
 )
 
 # Flip this to False to actually remove the files!
-DRY_RUN = True
+DRY_RUN = False
 
 
 def is_in_exceptions(x):
@@ -61,7 +61,8 @@ def main(dry_run, verbose=True):
     assert os.path.isdir(desktop_path)
     removed = []
     for f in os.listdir(desktop_path):
-        if any((os.path.islink(f), os.path.isfile(f), os.path.isdir(f))):
+        full_path = os.path.join(desktop_path, f)
+        if any((os.path.islink(full_path), os.path.isdir(full_path))):
             continue
         if not f.endswith(".lnk"):
             continue
