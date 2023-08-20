@@ -40,7 +40,7 @@ EXCEPTIONS = (
 )
 
 # Flip this to False to actually remove the files!
-DRY_RUN = False
+DRY_RUN = True
 
 
 def is_in_exceptions(x):
