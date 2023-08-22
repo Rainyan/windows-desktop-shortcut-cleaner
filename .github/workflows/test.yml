@@ -1,0 +1,29 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Get desktop directory path
+        working-directory: src
+        shell: python
+        run: |
+          import os
+          import cleaner
+
+          desktop = cleaner.get_known_path("Desktop")
+          assert os.path.isdir(desktop)
+
+          env = os.getenv("GITHUB_ENV")
+
+          with open(env, "w") as f:
+            f.write(f"DESKTOP={desktop}")
+
+      - name: Check dir
+        shell: cmd
+        run: |
+          ECHO GITHUB_ENV: %GITHUB_ENV%
