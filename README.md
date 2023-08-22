@@ -54,12 +54,13 @@ Python script that removes all shortcuts from the user's Desktop folder, with op
 
 options:
   -h, --help            show this help message and exit
-  -f, --no-dry-run      permanently delete the matching files (instead of dry-run)
-  -V, --verbose         whether to print additional debug information
+  -f, --no-dry-run      permanently delete the matching files (instead of dry-run). default: false
+  -V, --verbose         whether to print additional debug information. default: false
   -d DESKTOPS, --desktops DESKTOPS
-                        comma-delimited list of desktop identifiers to use
+                        comma-delimited list of desktop identifiers to use. default: Desktop,PublicDesktop
   -e EXCEPTIONS, --exceptions EXCEPTIONS
-                        never delete shortcuts with these names
+                        comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default:
+                        empty list
   --print-my-desktop-dir
                         outputs the user's desktop directory to stdout and exits
 ```
