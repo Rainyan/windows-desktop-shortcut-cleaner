@@ -21,10 +21,12 @@ jobs:
           FOR /F "tokens=* USEBACKQ" %%F IN (`scleaner --print-my-desktop-dir`) DO (
           SET DESKTOP=%%F
           )
-          ECHO %DESKTOP%
-          echo "{DESKTOP}={%DESKTOP%}" >> "$GITHUB_ENV"
+          CD %DESKTOP%
+          
+          FOR /F "tokens=* USEBACKQ" %%F IN (`dir /b /s foo.lnk`) DO (
+          SET FOUND_FOO=%%F
+          )
+          echo "%FOUND_FOO%"
 
-      - name: Check dir
-        shell: cmd
-        run: |
-          ECHO GITHUB_ENV: %GITHUB_ENV%
+          REM touch foobar.lnk
+          
