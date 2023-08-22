@@ -22,11 +22,11 @@ jobs:
           SET DESKTOP=%%F
           )
           CD %DESKTOP%
-          
-          FOR /F "tokens=* USEBACKQ" %%F IN (`dir /b /s foo.lnk`) DO (
-          SET FOUND_FOO=%%F
-          )
-          echo "%FOUND_FOO%"
 
-          REM touch foobar.lnk
+          SET TEST_FILE=foo.lnk
+
+          IF EXIST ".\%TEST_FILE%" (EXIT 1)
+          ECHO NUL > %TEST_FILE%
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 2)
+          scleaner
           
