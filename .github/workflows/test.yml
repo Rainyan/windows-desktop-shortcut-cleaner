@@ -21,8 +21,33 @@ jobs:
 
           SET TEST_FILE=foo.lnk
 
+          REM File already exists
           IF EXIST ".\%TEST_FILE%" (EXIT 1)
+
           ECHO NUL > %TEST_FILE%
+          REM File doesn't exist after creation
           IF NOT EXIST ".\%TEST_FILE%" (EXIT 2)
+
+          scleaner
+          REM Dry-run fails
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 3)
+
+          scleaner -e %TEST_FILE% -f
+          REM Filename exception fails
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 4)
+
+          scleaner -f -e %TEST_FILE%
+          REM Filename exception fails
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 5)
+
+          scleaner -f -d "PublicDesktop"
+          REM Wrong desktop folder is cleaned
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 6)
+
+          scleaner --print-my-desktop-dir
+          REM Print-my-desktop doesn't exit correctly
+          IF NOT EXIST ".\%TEST_FILE%" (EXIT 7)
+
           scleaner -f
-          IF EXIST ".\%TEST_FILE%" (EXIT 3)
+          REM The file is not removed even though it should
+          IF EXIST ".\%TEST_FILE%" (EXIT 8)
