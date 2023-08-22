@@ -102,7 +102,7 @@ $settings = New-ScheduledTaskSettingsSet
 
 Register-ScheduledTask -Action $action -Trigger $trigger -Settings $settings `
   -TaskName "Cleanup Desktop Shortcuts" `
-  -Description "Removes unwanted .lnk shortcuts from the user's Desktop folder."
+  -Description "Removes unwanted .lnk shortcuts from the desktop folder(s)."
 ```
 #### Remove the scheduled task
 ```ps1
