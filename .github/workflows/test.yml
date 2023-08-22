@@ -16,10 +16,13 @@ jobs:
 
       - name: Get desktop directory path
         working-directory: src
-        shell: bash
+        shell: cmd
         run: |
-          DESKTOP = $(scleaner --print-my-desktop-dir)
-          echo "{DESKTOP}={$DESKTOP}" >> "$GITHUB_ENV"
+          FOR /F "tokens=* USEBACKQ" %%F IN (`scleaner --print-my-desktop-dir`) DO (
+          SET DESKTOP=%%F
+          )
+          ECHO %DESKTOP%
+          echo "{DESKTOP}={%DESKTOP%}" >> "$GITHUB_ENV"
 
       - name: Check dir
         shell: cmd
