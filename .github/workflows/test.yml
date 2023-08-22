@@ -8,6 +8,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Pls
+        working-directory: src
+        shell: cmd
+        run: dir
+
       - name: Get desktop directory path
         working-directory: src
         shell: python
