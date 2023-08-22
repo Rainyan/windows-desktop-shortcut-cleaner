@@ -29,7 +29,6 @@ import thirdparty.knownpaths as kp
 
 import argparse
 import os
-import sys
 
 
 # Flip this to False to actually remove the files!
@@ -56,6 +55,62 @@ def get_known_path(folderid):
 
 def main():
     """Entry point"""
+    parser = argparse.ArgumentParser(
+        prog="scleaner",
+        description="Python script that removes all shortcuts from the user's Desktop folder, with optional exceptions",
+    )
+    parser.add_argument(
+        "-f",
+        "--no-dry-run",
+        action="store_true",
+        help="permanently delete the matching files (instead of dry-run)",
+    )
+    parser.add_argument(
+        "-V",
+        "--verbose",
+        action="store_true",
+        help="whether to print additional debug information",
+    )
+    parser.add_argument(
+        "-d",
+        "--desktops",
+        help="comma-delimited list of desktop identifiers to use",
+    )
+    parser.add_argument(
+        "-e",
+        "--exceptions",
+        help="never delete shortcuts with these names",
+    )
+    parser.add_argument(
+        "--print-my-desktop-dir",
+        action="store_true",
+        help="outputs the user's desktop directory to stdout and exits",
+    )
+    args = parser.parse_args()
+
+    if args.print_my_desktop_dir:
+        print(get_known_path("Desktop"))
+        return
+
+    VERBOSE = args.verbose
+
+    DRY_RUN = not args.no_dry_run
+
+    if args.desktops is not None:
+        for a in list(set((args.desktops).split(","))):
+            a = a.strip()
+            if not a in DESKTOP_IDS:
+                DESKTOP_IDS.append(a)
+
+    if args.exceptions is not None:
+        for a in list(set((args.exceptions).split(","))):
+            a = a.strip()
+            assert not a.endswith(
+                ".lnk"
+            ), "Please don't include the .lnk extension to the exception name"
+            if not a in EXCEPTIONS:
+                EXCEPTIONS.append(a)
+
     desktop_paths = [get_known_path(a) for a in DESKTOP_IDS]
     assert all(os.path.isdir(a) for a in desktop_paths)
 
@@ -96,59 +151,4 @@ def remove_file(f):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        prog="scleaner",
-        description="Python script that removes all shortcuts from the user's Desktop folder, with optional exceptions",
-    )
-    parser.add_argument(
-        "-f",
-        "--no-dry-run",
-        action="store_true",
-        help="permanently delete the matching files (instead of dry-run)",
-    )
-    parser.add_argument(
-        "-V",
-        "--verbose",
-        action="store_true",
-        help="whether to print additional debug information",
-    )
-    parser.add_argument(
-        "-d",
-        "--desktops",
-        help="comma-delimited list of desktop identifiers to use",
-    )
-    parser.add_argument(
-        "-e",
-        "--exceptions",
-        help="never delete shortcuts with these names",
-    )
-    parser.add_argument(
-        "--print-my-desktop-dir",
-        action="store_true",
-        help="outputs the user's desktop directory to stdout and exits",
-    )
-    args = parser.parse_args()
-
-    if (args.print_my_desktop_dir):
-        print(get_known_path("Desktop"))
-        sys.exit(0)
-
-    VERBOSE = args.verbose
-
-    DRY_RUN = not args.no_dry_run
-
-    if args.desktops is not None:
-        for a in list(set((args.desktops).split(","))):
-            a = a.strip()
-            if not a in DESKTOP_IDS:
-                DESKTOP_IDS.append(a)
-
-    if args.exceptions is not None:
-        for a in list(set((args.exceptions).split(","))):
-            a = a.strip()
-            assert not a.endswith(
-                ".lnk"
-            ), "Please don't include the .lnk extension to the exception name"
-            if not a in EXCEPTIONS:
-                EXCEPTIONS.append(a)
     main()
