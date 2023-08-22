@@ -18,15 +18,17 @@ jobs:
         shell: python
         run: |
           import os
-          import src.cleaner as cleaner
+          import cleaner
 
           desktop = cleaner.get_known_path("Desktop")
           assert os.path.isdir(desktop)
 
           env = os.getenv("GITHUB_ENV")
+          assert env is not None
 
-          with open(env, "w") as f:
-            f.write(f"DESKTOP={desktop}")
+          print(f"DESKTOP={desktop}")
+          #with open(env, "w") as f:
+          #  f.write(f"DESKTOP={desktop}")
 
       - name: Check dir
         shell: cmd
