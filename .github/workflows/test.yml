@@ -8,27 +8,18 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Pls
-        working-directory: src
+      - name: Install the app
         shell: cmd
-        run: dir
+        run: |
+          pip install -U pipx
+          pipx install .
 
       - name: Get desktop directory path
         working-directory: src
-        shell: python
+        shell: bash
         run: |
-          import os
-          import cleaner
-
-          desktop = cleaner.get_known_path("Desktop")
-          assert os.path.isdir(desktop)
-
-          env = os.getenv("GITHUB_ENV")
-          assert env is not None
-
-          print(f"DESKTOP={desktop}")
-          #with open(env, "w") as f:
-          #  f.write(f"DESKTOP={desktop}")
+          DESKTOP = $(scleaner --print-my-desktop-dir)
+          echo "{DESKTOP}={$DESKTOP}" >> "$GITHUB_ENV"
 
       - name: Check dir
         shell: cmd
