@@ -29,6 +29,7 @@ import thirdparty.knownpaths as kp
 
 import argparse
 import os
+import sys
 
 
 # Flip this to False to actually remove the files!
@@ -121,7 +122,16 @@ if __name__ == "__main__":
         "--exceptions",
         help="never delete shortcuts with these names",
     )
+    parser.add_argument(
+        "--print-my-desktop-dir",
+        action="store_true",
+        help="outputs the user's desktop directory to stdout and exits",
+    )
     args = parser.parse_args()
+
+    if (args.print_my_desktop_dir):
+        print(get_known_path("Desktop"))
+        sys.exit(0)
 
     VERBOSE = args.verbose
 
