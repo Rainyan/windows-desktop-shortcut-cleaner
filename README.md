@@ -4,49 +4,69 @@ Python 3 script for Windows that removes all shortcuts from the user's Desktop f
 A lot of Windows apps will create shortcuts on the desktop without asking the user for permission. Scheduling this script can help with keeping the desktop clean automatically.
 
 # Requirements
-* Modern-ish version of Windows (newer than Vista should work)
-* Modern-ish version of Python 3 (tested with 3.11)
+* Windows 10 or newer (anything newer than Windows Vista probably works, but not supported)
+* Python ^3.9
 
-# Install
-Get the code:
+# Installation
+Using Python:
 ```cmd
 git clone https://github.com/Rainyan/windows-desktop-shortcut-cleaner
+cd windows-desktop-shortcut-cleaner
+python src\cleaner.py
 ```
 
-Try the [one-time run](#one-time-run) to do a dry-run of the script, which will just print what would have been deleted instead of actually deleting it.
-
-If no files would have been deleted, you should see printout such as: `[Dry-run] Would remove 0 desktop shortcut(s).`
-
-Else, there should be printout akin to: `[Dry-run] Would remove: "calc.exe.lnk"`
-
-If you're happy with the dry-run output, flip the dry-run switch off in code to start deleting things for real:
-```py
-# Flip this to False to actually remove the files!
-DRY_RUN = True
+Using pipx:
+```cmd
+pip install -U pipx
+pipx install git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner
+scleaner
 ```
 
 # Usage
-## Exceptions
-You can customize the list of shortcuts that will be preserved by modifying the EXCEPTIONS global in the source code:
-```py
-# Never delete shortcuts with these names
-EXCEPTIONS = (
-    "ALVR",
-    "AutoProcPrio with better rules",
-    "Install GHC dev dependencies",
-    "Mingw haskell shell",
-    "MuseScore 4",
-    "SideQuest",
-    # etc...
-)
-```
-These exceptions are case-insensitive, and should not include the `.lnk` shortcut extension.
+For a simple dry-run (doesn't delete anything), simply run the app.
 
-## One-time run
-Assuming the correct "python" version is callable from PATH in this example
+If you installed with pipx, the command is `scleaner`.
+
+If you're using the script version, run the script with `python src\cleaner.py`.
+
+If your dry-run printout returns empty, the tool would have deleted nothing. Else, you'll see a list of would-be deleted files:
 ```cmd
-python src\cleaner.py
+>scleaner
+[Dry-run] Would remove: "C:\Users\username\Desktop\ALVR.lnk"
+[Dry-run] Would remove: "C:\Users\username\Desktop\Mingw haskell shell.lnk"
 ```
+
+If you don't want to delete specific shortcuts, add them to your exceptions list:
+```cmd
+>scleaner --exceptions "ALVR,Mingw haskell shell"
+```
+
+Once you're happy with the dry-run output, you can delete the files for real with the `-f` flag:
+```cmd
+>scleaner -f
+```
+
+## Full list of available commands
+
+* `-f/--no-dry-run`
+    * permanently delete the matching files (instead of dry-run). default: false
+* `-V/--verbose`
+    * whether to print additional debug information. default: true
+* `-d/--desktops`
+    * comma-delimited list of desktop identifiers to use. default: `Desktop,PublicDesktop`
+* `-e/--exceptions`
+    * comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default: empty list
+* `--print-my-desktop-dir`
+    * outputs the user's desktop directory to stdout and exits
+
+## More examples
+
+If you'd like to skip deleting shortcuts from the public desktop folder, you can specify the folders to be scanned with `-d/--desktops`:
+```cmd
+REM This will skip "PublicDesktop", and only scan the user's own desktop folder.
+>scleaner --desktops "Desktop"
+```
+
 
 ## Scheduling
 
@@ -57,6 +77,7 @@ python src\cleaner.py
 > [!NOTE]  
 > You may have to modify the file paths in this snippet to match your system.
 
+This example is using the pythonw interpreter, instead of the pipx binary.
 
 ```ps1
 # Set your python path and the script path here.
