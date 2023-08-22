@@ -27,25 +27,18 @@
 
 import thirdparty.knownpaths as kp
 
+import argparse
 import os
 
-# Never delete shortcuts with these names
-EXCEPTIONS = (
-    "ALVR",
-    "AutoProcPrio with better rules",
-    "Install GHC dev dependencies",
-    "Mingw haskell shell",
-    "MuseScore 4",
-    "SideQuest",
-)
 
 # Flip this to False to actually remove the files!
 DRY_RUN = True
-# Whether to also clean the public desktop (visible to all users)
-INCLUDE_PUBLIC_DESKTOP = True
 # Print extra info to stdout
-VERBOSE = True
-
+VERBOSE = False
+# Desktop identifiers to use
+DESKTOP_IDS = [ "Desktop", "PublicDesktop" ]
+# Never delete shortcuts with these names
+EXCEPTIONS = []
 
 def is_in_exceptions(x):
     """Return whether x (sans .lnk extension, case insensitive) is in EXCEPTIONS"""
@@ -59,17 +52,16 @@ def get_known_path(folderid):
     )
 
 
-def main(dry_run, include_public_desktop, verbose):
+def main():
     """Entry point"""
-    desktop_paths = [get_known_path("Desktop")]
-    if include_public_desktop:
-        desktop_paths.append(get_known_path("PublicDesktop"))
+    desktop_paths = [get_known_path(a) for a in DESKTOP_IDS]
+    assert all(os.path.isdir(a) for a in desktop_paths)
 
-    if verbose:
+    if VERBOSE:
         print(f"{len(desktop_paths)} desktop paths total: {desktop_paths}")
 
     for desktop_path in desktop_paths:
-        if verbose:
+        if VERBOSE:
             print(f'Checking desktop path: "{desktop_path}"')
         assert os.path.isdir(desktop_path)
         removed = []
@@ -81,23 +73,69 @@ def main(dry_run, include_public_desktop, verbose):
                 continue
             if is_in_exceptions(f):
                 continue
-            remove_file(full_path, dry_run)
+            remove_file(full_path)
             removed.append(f)
-        if verbose:
+        if VERBOSE:
             print(
-                f"{'[Dry-run] Would remove' if dry_run else 'Removed'} {len(removed)} desktop shortcut(s)."
+                f"{'[Dry-run] Would remove' if DRY_RUN else 'Removed'} {len(removed)} desktop shortcut(s)."
             )
             for f in removed:
                 print(f'- "{os.path.join(desktop_path, f)}"')
+            print()
 
 
-def remove_file(f, dry_run):
+def remove_file(f):
     """Remove a file, with optional dry_run option for debug"""
-    if dry_run:
+    assert os.path.isfile(f)
+    if DRY_RUN:
         print(f'[Dry-run] Would remove: "{f}"')
         return
     os.remove(f)
 
 
 if __name__ == "__main__":
-    main(DRY_RUN, INCLUDE_PUBLIC_DESKTOP, VERBOSE)
+    parser = argparse.ArgumentParser(
+        prog="scleaner",
+        description="Python script that removes all shortcuts from the user's Desktop folder, with optional exceptions",
+    )
+    parser.add_argument(
+        "-f",
+        "--no-dry-run",
+        action="store_true",
+        help="permanently delete the matching files (instead of dry-run)",
+    )
+    parser.add_argument(
+        "-V",
+        "--verbose",
+        action="store_true",
+        help="whether to print additional debug information",
+    )
+    parser.add_argument(
+        "-d",
+        "--desktops",
+        help="comma-delimited list of desktop identifiers to use",
+    )
+    parser.add_argument(
+        "-e",
+        "--exceptions",
+        help="never delete shortcuts with these names",
+    )
+    args = parser.parse_args()
+
+    VERBOSE = args.verbose
+
+    DRY_RUN = not args.no_dry_run
+
+    if args.desktops is not None:
+        for a in list(set((args.desktops).split(","))):
+            a = a.strip()
+            if not a in DESKTOP_IDS:
+                DESKTOP_IDS.append(a)
+
+    if args.exceptions is not None:
+        for a in list(set((args.exceptions).split(","))):
+            a = a.strip()
+            assert not a.endswith(".lnk"), "Please don't include the .lnk extension to the exception name"
+            if not a in EXCEPTIONS:
+                EXCEPTIONS.append(a)
+    main()

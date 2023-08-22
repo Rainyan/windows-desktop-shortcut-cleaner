@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "scleaner"
+version = "0.1.0"
+description = ""
+authors = ["Rain <Rainyan@users.noreply.github.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [
+	{ include = "cleaner.py", from = "src" },
+	{ include = "thirdparty", from = "src" },
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.scripts]
+scleaner = "cleaner:main"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
