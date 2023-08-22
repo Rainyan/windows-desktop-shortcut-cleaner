@@ -17,9 +17,7 @@ jobs:
           FOR /F "tokens=* USEBACKQ" %%F IN (`scleaner --print-my-desktop-dir`) DO (
           SET DESKTOP=%%F
           )
-          ECHO Desktop: %DESKTOP%
-          CD %DESKTOP%
-          DIR
+          CD /D %DESKTOP%
 
           SET TEST_FILE=foo.lnk
 
