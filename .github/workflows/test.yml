@@ -13,7 +13,7 @@ jobs:
         shell: python
         run: |
           import os
-          import cleaner
+          import src.cleaner as cleaner
 
           desktop = cleaner.get_known_path("Desktop")
           assert os.path.isdir(desktop)
