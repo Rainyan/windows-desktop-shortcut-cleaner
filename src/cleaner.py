@@ -94,16 +94,21 @@ def main():
         print(desktop)
         return
 
+    global VERBOSE
     VERBOSE = args.verbose
 
+    global DRY_RUN
     DRY_RUN = not args.no_dry_run
 
+    global DESKTOP_IDS
     if args.desktops is not None:
+        DESKTOP_IDS = []  # Because we overwrite the default list
         for a in list(set((args.desktops).split(","))):
             a = a.strip()
             if not a in DESKTOP_IDS:
                 DESKTOP_IDS.append(a)
 
+    global EXCEPTIONS
     if args.exceptions is not None:
         for a in list(set((args.exceptions).split(","))):
             a = a.strip()
