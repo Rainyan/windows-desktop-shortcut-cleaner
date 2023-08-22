@@ -89,7 +89,9 @@ def main():
     args = parser.parse_args()
 
     if args.print_my_desktop_dir:
-        print(get_known_path("Desktop"))
+        desktop = get_known_path("Desktop")
+        assert os.path.isdir(desktop)
+        print(desktop)
         return
 
     VERBOSE = args.verbose
