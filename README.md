@@ -47,20 +47,24 @@ Once you're happy with the dry-run output, you can delete the files for real wit
 ```
 
 ## Full list of available commands
+```
+usage: scleaner [-h] [-f] [-V] [-d DESKTOPS] [-e EXCEPTIONS] [--print-my-desktop-dir]
 
-* `-f/--no-dry-run`
-    * permanently delete the matching files (instead of dry-run). default: false
-* `-V/--verbose`
-    * whether to print additional debug information. default: true
-* `-d/--desktops`
-    * comma-delimited list of desktop identifiers to use. default: `Desktop,PublicDesktop`
-* `-e/--exceptions`
-    * comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default: empty list
-* `--print-my-desktop-dir`
-    * outputs the user's desktop directory to stdout and exits
+Python script that removes all shortcuts from the user's Desktop folder, with optional exceptions
+
+options:
+  -h, --help            show this help message and exit
+  -f, --no-dry-run      permanently delete the matching files (instead of dry-run)
+  -V, --verbose         whether to print additional debug information
+  -d DESKTOPS, --desktops DESKTOPS
+                        comma-delimited list of desktop identifiers to use
+  -e EXCEPTIONS, --exceptions EXCEPTIONS
+                        never delete shortcuts with these names
+  --print-my-desktop-dir
+                        outputs the user's desktop directory to stdout and exits
+```
 
 ## More examples
-
 If you'd like to skip deleting shortcuts from the public desktop folder, you can specify the folders to be scanned with `-d/--desktops`:
 ```cmd
 REM This will skip "PublicDesktop", and only scan the user's own desktop folder.
