@@ -36,9 +36,10 @@ DRY_RUN = True
 # Print extra info to stdout
 VERBOSE = False
 # Desktop identifiers to use
-DESKTOP_IDS = [ "Desktop", "PublicDesktop" ]
+DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
+
 
 def is_in_exceptions(x):
     """Return whether x (sans .lnk extension, case insensitive) is in EXCEPTIONS"""
@@ -135,7 +136,9 @@ if __name__ == "__main__":
     if args.exceptions is not None:
         for a in list(set((args.exceptions).split(","))):
             a = a.strip()
-            assert not a.endswith(".lnk"), "Please don't include the .lnk extension to the exception name"
+            assert not a.endswith(
+                ".lnk"
+            ), "Please don't include the .lnk extension to the exception name"
             if not a in EXCEPTIONS:
                 EXCEPTIONS.append(a)
     main()
