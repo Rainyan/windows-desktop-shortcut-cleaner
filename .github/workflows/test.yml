@@ -24,5 +24,9 @@ jobs:
           IF EXIST ".\%TEST_FILE%" (EXIT 1)
           ECHO NUL > %TEST_FILE%
           IF NOT EXIST ".\%TEST_FILE%" (EXIT 2)
+          ECHO Pre:
+          scleaner
           scleaner -f
+          ECHO Post:
+          scleaner
           IF EXIST ".\%TEST_FILE%" (EXIT 3)
