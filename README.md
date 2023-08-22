@@ -90,7 +90,8 @@ This example is using the pythonw interpreter, instead of the pipx binary.
 # to prevent the console window popup for background tasks.
 $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
-  -Argument "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src\cleaner.py"
+  -WorkingDirectory "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src" `
+  -Argument "cleaner.py -f -e `"Exception One,bar,baz`""
 
 # Scheduling a daily cleanup at 6 AM here, see the docs for customizing:
 # https://learn.microsoft.com/en-us/powershell/module/scheduledtasks/new-scheduledtasktrigger
