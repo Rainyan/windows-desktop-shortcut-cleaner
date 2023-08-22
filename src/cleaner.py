@@ -63,23 +63,23 @@ def main():
         "-f",
         "--no-dry-run",
         action="store_true",
-        help="permanently delete the matching files (instead of dry-run)",
+        help="permanently delete the matching files (instead of dry-run). default: false",
     )
     parser.add_argument(
         "-V",
         "--verbose",
         action="store_true",
-        help="whether to print additional debug information",
+        help="whether to print additional debug information. default: false",
     )
     parser.add_argument(
         "-d",
         "--desktops",
-        help="comma-delimited list of desktop identifiers to use",
+        help="comma-delimited list of desktop identifiers to use. default: Desktop,PublicDesktop",
     )
     parser.add_argument(
         "-e",
         "--exceptions",
-        help="never delete shortcuts with these names",
+        help="comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default: empty list",
     )
     parser.add_argument(
         "--print-my-desktop-dir",
