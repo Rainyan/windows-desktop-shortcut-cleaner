@@ -9,28 +9,28 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 
 # Installation
 Using git:
-```bash
-# Installation
+```cmd
+REM Installation
 git clone https://github.com/Rainyan/windows-desktop-shortcut-cleaner
-cd windows-desktop-shortcut-cleaner
+CD windows-desktop-shortcut-cleaner
 
-# Running
+REM Running
 python src\cleaner.py
 
-# Updating
+REM Updating
 git pull
 ```
 
 Using pipx:
-```bash
-# Installation
+```cmd
+REM Installation
 pip install -U pipx
 pipx install git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner
 
-# Running
+REM Running
 scleaner
 
-# Updating
+REM Updating
 pipx upgrade scleaner
 ```
 
