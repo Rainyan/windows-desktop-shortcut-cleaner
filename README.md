@@ -8,7 +8,7 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 * Python ^3.9
 
 # Installation
-Using Python:
+Using git:
 ```cmd
 git clone https://github.com/Rainyan/windows-desktop-shortcut-cleaner
 cd windows-desktop-shortcut-cleaner
@@ -17,9 +17,13 @@ python src\cleaner.py
 
 Using pipx:
 ```cmd
+REM Installation
 pip install -U pipx
 pipx install git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner
 scleaner
+
+REM Updating
+pipx upgrade scleaner
 ```
 
 # Usage
@@ -43,7 +47,7 @@ If you don't want to delete specific shortcuts, add them to your exceptions list
 
 Once you're happy with the dry-run output, you can delete the files for real with the `-f` flag:
 ```cmd
->scleaner -f
+>scleaner --exceptions "ALVR,Mingw haskell shell" -f
 ```
 
 ## Full list of available commands
