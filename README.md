@@ -39,7 +39,7 @@ For a simple dry-run (doesn't delete anything), simply run the app.
 
 If you installed with pipx, the command is `scleaner`.
 
-If you're using the script version, run the script with `python src\cleaner.py`.
+If you're using the script version, run the script with `python src\cleaner.py` (or `python3`, if `python` doesn't work for your environment).
 
 If your dry-run printout returns empty, the tool would have deleted nothing. Else, you'll see a list of would-be deleted files:
 ```cmd
