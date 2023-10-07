@@ -8,6 +8,19 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 * Python ^3.9
 
 # Installation
+Using [pipx](https://github.com/pypa/pipx):
+```cmd
+REM Installation
+pip install -U pipx
+pipx install git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner
+
+REM Running
+scleaner
+
+REM Updating
+pipx upgrade scleaner
+```
+
 Using git:
 ```cmd
 REM Installation
@@ -19,19 +32,6 @@ python src\cleaner.py
 
 REM Updating
 git pull
-```
-
-Using pipx:
-```cmd
-REM Installation
-pip install -U pipx
-pipx install git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner
-
-REM Running
-scleaner
-
-REM Updating
-pipx upgrade scleaner
 ```
 
 # Usage
