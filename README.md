@@ -25,7 +25,7 @@ Using git:
 ```cmd
 REM Installation
 git clone https://github.com/Rainyan/windows-desktop-shortcut-cleaner
-CD windows-desktop-shortcut-cleaner
+CD ".\windows-desktop-shortcut-cleaner"
 
 REM Running
 python src\cleaner.py
