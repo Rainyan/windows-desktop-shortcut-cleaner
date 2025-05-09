@@ -19,7 +19,7 @@ jobs:
           )
           CD /D %DESKTOP%
 
-          SET TEST_FILE=foo.lnk
+          SET TEST_FILE=foo
 
           REM File already exists
           IF EXIST ".\%TEST_FILE%" (EXIT 1)
