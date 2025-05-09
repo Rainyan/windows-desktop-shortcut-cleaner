@@ -5,7 +5,7 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 
 # Requirements
 * Windows 10 or newer (anything newer than Windows Vista probably works, but not supported)
-* Python ^3.9
+* Python 3.10 or newer
 
 # Installation
 Using [pipx](https://github.com/pypa/pipx):
