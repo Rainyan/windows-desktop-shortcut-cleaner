@@ -20,6 +20,7 @@ jobs:
           CD /D %DESKTOP%
 
           SET TEST_FILE=foo.lnk
+          FOR %%f in ("%TEST_FILE%") DO SET TEST_FILE_NO_EXT=%%~nf
 
           REM File already exists
           IF EXIST ".\%TEST_FILE%" (EXIT 1)
@@ -32,11 +33,11 @@ jobs:
           REM Dry-run fails
           IF NOT EXIST ".\%TEST_FILE%" (EXIT 3)
 
-          scleaner -e %TEST_FILE% -f
+          scleaner -e %TEST_FILE_NO_EXT% -f
           REM Filename exception fails
           IF NOT EXIST ".\%TEST_FILE%" (EXIT 4)
 
-          scleaner -f -e %TEST_FILE%
+          scleaner -f -e %TEST_FILE_NO_EXT%
           REM Filename exception fails
           IF NOT EXIST ".\%TEST_FILE%" (EXIT 5)
 
