@@ -14,7 +14,9 @@ jobs:
           cache: poetry
 
       - name: Install the app
-        run: pipx install .
+        run: |
+          pipx install poetry --python $(which python)
+          pipx install .
 
       - name: Test
         shell: cmd
