@@ -4,8 +4,8 @@ Python 3 script for Windows that removes all shortcuts from the user's Desktop f
 A lot of Windows apps will create shortcuts on the desktop without asking the user for permission. Scheduling this script can help with keeping the desktop clean automatically.
 
 # Requirements
-* Windows 10 or newer (anything newer than Windows Vista probably works, but not supported)
-* Python ^3.9
+* Windows 11 or newer (anything newer than Windows Vista probably works, but support for end-of-support Windows versions is not maintained)
+* Python 3.10 or newer
 
 # Installation
 Using [pipx](https://github.com/pypa/pipx):
