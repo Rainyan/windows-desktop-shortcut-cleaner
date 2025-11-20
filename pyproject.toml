@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "scleaner"
-version = "0.3.0"
-description = ""
+version = "1.0.0"
+description = "Removes all shortcuts from the user's Desktop folder, with optional exceptions."
 authors = ["Rain <Rainyan@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"
@@ -11,7 +11,7 @@ packages = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 
 [tool.poetry.scripts]
 scleaner = "cleaner:main"
