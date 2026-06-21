@@ -24,7 +24,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import thirdparty.knownpaths as kp
 
 import argparse
@@ -105,17 +104,17 @@ def main():
         DESKTOP_IDS = []  # Because we overwrite the default list
         for a in list(set((args.desktops).split(","))):
             a = a.strip()
-            if not a in DESKTOP_IDS:
+            if a not in DESKTOP_IDS:
                 DESKTOP_IDS.append(a)
 
     global EXCEPTIONS
     if args.exceptions is not None:
         for a in list(set((args.exceptions).split(","))):
             a = a.strip()
-            assert not a.endswith(
-                ".lnk"
-            ), "Please don't include the .lnk extension to the exception name"
-            if not a in EXCEPTIONS:
+            assert not a.endswith(".lnk"), (
+                "Please don't include the .lnk extension to the exception name"
+            )
+            if a not in EXCEPTIONS:
                 EXCEPTIONS.append(a)
 
     desktop_paths = [get_known_path(a) for a in DESKTOP_IDS]
