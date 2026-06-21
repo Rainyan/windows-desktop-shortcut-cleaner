@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "scleaner"
-version = "1.0.0"
+version = "2.0.0"
 description = "Removes all shortcuts from the user's Desktop folder, with optional exceptions."
 authors = ["Rain <Rainyan@users.noreply.github.com>"]
 license = "MIT"
