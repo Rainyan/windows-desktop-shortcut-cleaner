@@ -39,10 +39,16 @@ DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
 
+SHORTCUT_EXTENSIONS = [".lnk", ".url"]
+
 
 def is_in_exceptions(x):
-    """Return whether x (sans .lnk extension, case insensitive) is in EXCEPTIONS"""
-    return x.split(".lnk")[0].lower() in (a.lower() for a in EXCEPTIONS)
+    """Return whether x (sans extension(s), case insensitive) is in EXCEPTIONS"""
+    for exception in EXCEPTIONS:
+        for ext in SHORTCUT_EXTENSIONS:
+            if x.split(ext)[0].lower() in exception.lower():
+                return True
+    return False
 
 
 def get_known_path(folderid):
@@ -78,7 +84,7 @@ def main():
     parser.add_argument(
         "-e",
         "--exceptions",
-        help="comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default: empty list",
+        help="comma-delimited list of shortcuts never to be deleted, with file extension being optional unless ambiguous. default: empty list",
     )
     parser.add_argument(
         "--print-my-desktop-dir",
@@ -109,13 +115,23 @@ def main():
 
     global EXCEPTIONS
     if args.exceptions is not None:
+        first_char = "."
+        assert all((ext.startswith(first_char) for ext in SHORTCUT_EXTENSIONS))
+
+        def without_ext(x):
+            return first_char.join(x.split(first_char)[:-1])
+
         for a in list(set((args.exceptions).split(","))):
             a = a.strip()
-            assert not a.endswith(".lnk"), (
-                "Please don't include the .lnk extension to the exception name"
-            )
-            if a not in EXCEPTIONS:
-                EXCEPTIONS.append(a)
+            unambiguous = a.split(first_char)[-1] in SHORTCUT_EXTENSIONS
+            potentially_ambiguous = not unambiguous
+            if potentially_ambiguous:
+                for exception in EXCEPTIONS:
+                    assert without_ext(a) != without_ext(exception), (
+                        f'"{a}" is ambiguous with "{exception}", '
+                        "please exclude with file extension included"
+                    )
+            EXCEPTIONS.append(a)
 
     desktop_paths = [get_known_path(a) for a in DESKTOP_IDS]
     assert all(os.path.isdir(a) for a in desktop_paths)
@@ -132,7 +148,7 @@ def main():
             full_path = os.path.join(desktop_path, f)
             if any((os.path.islink(full_path), os.path.isdir(full_path))):
                 continue
-            if not any((f.endswith(".lnk"), f.endswith(".url"))):
+            if not any((f.endswith(ext) for ext in SHORTCUT_EXTENSIONS)):
                 continue
             if is_in_exceptions(f):
                 continue
