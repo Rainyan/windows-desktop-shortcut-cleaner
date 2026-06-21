@@ -39,12 +39,14 @@ DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
 
+FIRST_CHAR = "."
+
 
 def is_in_exceptions(x, extensions):
     """Return whether x (sans extension(s), case insensitive) is in EXCEPTIONS"""
     for exception in EXCEPTIONS:
         for ext in extensions:
-            if x.split(ext)[0].lower() in exception.lower():
+            if x.split(f"{FIRST_CHAR}{ext}")[0].lower() in exception.lower():
                 return True
     return False
 
@@ -119,17 +121,18 @@ def main():
 
     global EXCEPTIONS
     if args.exceptions is not None:
-        first_char = "."
 
         def without_ext(x):
-            return first_char.join(x.split(first_char)[:-1])
+            return FIRST_CHAR.join(x.split(FIRST_CHAR)[:-1])
 
         for a in listify(args.exceptions):
             a = a.strip()
-            unambiguous = a.split(first_char)[-1] in listify(args.extensions)
+            unambiguous = a.split(FIRST_CHAR)[-1] in listify(args.extensions)
             potentially_ambiguous = not unambiguous
             if potentially_ambiguous:
                 for exception in EXCEPTIONS:
+                    if without_ext(a) == "":
+                        continue
                     assert without_ext(a) != without_ext(exception), (
                         f'"{a}" is ambiguous with "{exception}", '
                         "please exclude with file extension included"
@@ -172,10 +175,13 @@ def listify(delimited_str, unique=True, allow_empty=False, delimiter=","):
     If "unique" is True, omits identical elements from the output.
     If "allow_empty" is False, omits empty elements from the output.
     """
+
     def fn_set(x):
         return set(x) if unique else x
+
     def fn_filter(x):
         return x if allow_empty else filter(None, x)
+
     return list(fn_set(fn_filter(delimited_str.split(delimiter))))
 
 

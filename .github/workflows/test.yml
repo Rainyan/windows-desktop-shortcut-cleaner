@@ -1,62 +1,29 @@
 name: Test
 
-on: [push, pull_request]
+on: push
 
 jobs:
   test:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v6
         with:
-          python-version: '3.14'
+          python-version-file: 'pyproject.toml'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@fac544c07dec837d0ccb6301d7b5580bf5edae39 # v8.2.0
+        with:
+          version: "0.11.23"
 
       - name: Install the app
-        run: |
-          python3 --version
-          python3 -m pip install -U pip
-          python3 -m pip install -U pipx
-          python3 -m pipx install .
+        run: uv tool install .
 
       - name: Test
         shell: cmd
         run: |
-          FOR /F "tokens=* USEBACKQ" %%F IN (`scleaner --print-my-desktop-dir`) DO (
-          SET DESKTOP=%%F
-          )
-          CD /D %DESKTOP%
-
-          SET TEST_FILE=foo.lnk
-          FOR %%f in ("%TEST_FILE%") DO SET TEST_FILE_NO_EXT=%%~nf
-
-          REM File already exists
-          IF EXIST ".\%TEST_FILE%" (EXIT 1)
-
-          ECHO NUL > %TEST_FILE%
-          REM File doesn't exist after creation
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 2)
-
-          scleaner
-          REM Dry-run fails
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 3)
-
-          scleaner -e %TEST_FILE_NO_EXT% -f
-          REM Filename exception fails
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 4)
-
-          scleaner -f -e %TEST_FILE_NO_EXT%
-          REM Filename exception fails
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 5)
-
-          scleaner -f -d "PublicDesktop"
-          REM Wrong desktop folder is cleaned
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 6)
-
-          scleaner --print-my-desktop-dir
-          REM Print-my-desktop doesn't exit correctly
-          IF NOT EXIST ".\%TEST_FILE%" (EXIT 7)
-
-          scleaner -f
-          REM The file is not removed even though it should
-          IF EXIST ".\%TEST_FILE%" (EXIT 8)
+          :: Call EXIT for real on the CI script run so we can fail properly
+          sed "s/ECHO EXIT/EXIT/" .\test.bat > .\test.bat.fixup
+          MOVE /Y .\test.bat.fixup .\test.bat
+          CMD /C .\test.bat
