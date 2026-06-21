@@ -133,7 +133,7 @@ def main():
             full_path = os.path.join(desktop_path, f)
             if any((os.path.islink(full_path), os.path.isdir(full_path))):
                 continue
-            if not f.endswith(".lnk"):
+            if not any((f.endswith(".lnk"), f.endswith(".url"))):
                 continue
             if is_in_exceptions(f):
                 continue
