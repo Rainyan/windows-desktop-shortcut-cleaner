@@ -172,8 +172,10 @@ def listify(delimited_str, unique=True, allow_empty=False, delimiter=","):
     If "unique" is True, omits identical elements from the output.
     If "allow_empty" is False, omits empty elements from the output.
     """
-    fn_set = lambda x: set(x) if unique else x
-    fn_filter = lambda x: x if allow_empty else filter(None, x)
+    def fn_set(x):
+        return set(x) if unique else x
+    def fn_filter(x):
+        return x if allow_empty else filter(None, x)
     return list(fn_set(fn_filter(delimited_str.split(delimiter))))
 
 
