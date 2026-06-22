@@ -119,6 +119,7 @@ def main():
             if a not in DESKTOP_IDS:
                 DESKTOP_IDS.append(a)
 
+    extensions = listify(args.extensions)
     global EXCEPTIONS
     if args.exceptions is not None:
 
@@ -127,7 +128,7 @@ def main():
 
         for a in listify(args.exceptions):
             a = a.strip()
-            unambiguous = a.split(FIRST_CHAR)[-1] in listify(args.extensions)
+            unambiguous = a.split(FIRST_CHAR)[-1] in extensions
             potentially_ambiguous = not unambiguous
             if potentially_ambiguous:
                 for exception in EXCEPTIONS:
@@ -154,11 +155,11 @@ def main():
             full_path = os.path.join(desktop_path, f)
             if any((os.path.islink(full_path), os.path.isdir(full_path))):
                 continue
-            if not any((f.endswith(ext) for ext in listify(args.extensions))):
+            if not any((f.endswith(ext) for ext in extensions)):
                 continue
-            if is_in_exceptions(f, listify(args.extensions)):
+            if is_in_exceptions(f, extensions):
                 continue
-            remove_file(full_path)
+            remove_file(full_path, extensions)
             removed.append(f)
         if VERBOSE:
             print(
@@ -185,13 +186,16 @@ def listify(delimited_str, unique=True, allow_empty=False, delimiter=","):
     return list(fn_set(fn_filter(delimited_str.split(delimiter))))
 
 
-def remove_file(f):
+def remove_file(path, allowed_file_extensions):
     """Remove a file, with optional dry_run option for debug"""
-    assert os.path.isfile(f)
+    assert os.path.isfile(path)
+    for ext in allowed_file_extensions:
+        assert len(ext) > 0
+    assert any((path.endswith(ext) for ext in allowed_file_extensions))
     if DRY_RUN:
-        print(f'[Dry-run] Would remove: "{f}"')
+        print(f'[Dry-run] Would remove: "{path}"')
         return
-    os.remove(f)
+    os.remove(path)
 
 
 if __name__ == "__main__":
