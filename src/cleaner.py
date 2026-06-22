@@ -39,14 +39,14 @@ DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
 
-FIRST_CHAR = "."
+FIRST_CHAR_OF_EXT = "."
 
 
 def is_in_exceptions(x, extensions):
     """Return whether x (sans extension(s), case insensitive) is in EXCEPTIONS"""
     for exception in EXCEPTIONS:
         for ext in extensions:
-            if x.split(f"{FIRST_CHAR}{ext}")[0].lower() in exception.lower():
+            if x.split(f"{FIRST_CHAR_OF_EXT}{ext}")[0].lower() in exception.lower():
                 return True
     return False
 
@@ -124,11 +124,11 @@ def main():
     if args.exceptions is not None:
 
         def without_ext(x):
-            return FIRST_CHAR.join(x.split(FIRST_CHAR)[:-1])
+            return FIRST_CHAR_OF_EXT.join(x.split(FIRST_CHAR_OF_EXT)[:-1])
 
         for a in listify(args.exceptions):
             a = a.strip()
-            unambiguous = a.split(FIRST_CHAR)[-1] in extensions
+            unambiguous = a.split(FIRST_CHAR_OF_EXT)[-1] in extensions
             potentially_ambiguous = not unambiguous
             if potentially_ambiguous:
                 for exception in EXCEPTIONS:
