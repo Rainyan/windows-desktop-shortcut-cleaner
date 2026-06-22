@@ -89,7 +89,9 @@ def main():
     parser.add_argument(
         "-E",
         "--extensions",
-        help='comma-delimited list of dot-prefixed file extensions which to consider as shortcut files, for example: "lnk,url" default: lnk',
+        help='comma-delimited list of file extensions to consider as shortcut files, for example: "lnk,url" default: lnk '
+        'Note that the extensions should *not* include the "." dot character since it is always implied, and doing so would '
+        'result in double dot: "..ext" which is likely not what you want.',
         default="lnk",
     )
     parser.add_argument(
