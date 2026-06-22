@@ -8,6 +8,18 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 * Python 3.10 or newer
 
 # Installation
+Using [uv](https://github.com/astral-sh/uv):
+```cmd
+REM Installation
+uv tool install "git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner"
+
+REM Running
+scleaner
+
+REM Updating
+uv tool update scleaner
+```
+
 Using [pipx](https://github.com/pypa/pipx):
 ```cmd
 REM Installation
@@ -37,7 +49,7 @@ git pull
 # Usage
 For a simple dry-run (doesn't delete anything), simply run the app.
 
-If you installed with pipx, the command is `scleaner`.
+If you installed with *uv* or *pipx*, the command is `scleaner`.
 
 If you're using the script version, run the script with `python src\cleaner.py` (or `python3`, if `python` doesn't work for your environment).
 
@@ -112,6 +124,8 @@ This example is using the pythonw interpreter, instead of the pipx binary.
 # Set your python path and the script path here.
 # Note that you can use "pythonw" instead of "python" in Windows
 # to prevent the console window popup for background tasks.
+# For a uv setup, you may with to rename the file to .pyw if relevant:
+# https://docs.astral.sh/uv/guides/scripts/#using-gui-scripts
 $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
   -WorkingDirectory "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src" `
