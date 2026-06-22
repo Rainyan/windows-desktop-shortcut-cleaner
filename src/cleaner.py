@@ -39,13 +39,11 @@ DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
 
-SHORTCUT_EXTENSIONS = [".lnk", ".url"]
 
-
-def is_in_exceptions(x):
+def is_in_exceptions(x, extensions):
     """Return whether x (sans extension(s), case insensitive) is in EXCEPTIONS"""
     for exception in EXCEPTIONS:
-        for ext in SHORTCUT_EXTENSIONS:
+        for ext in extensions:
             if x.split(ext)[0].lower() in exception.lower():
                 return True
     return False
@@ -87,6 +85,12 @@ def main():
         help="comma-delimited list of shortcuts never to be deleted, with file extension being optional unless ambiguous. default: empty list",
     )
     parser.add_argument(
+        "-E",
+        "--extensions",
+        help='comma-delimited list of dot-prefixed file extensions which to consider as shortcut files, for example: "lnk,url" default: lnk',
+        default="lnk",
+    )
+    parser.add_argument(
         "--print-my-desktop-dir",
         action="store_true",
         help="outputs the user's desktop directory to stdout and exits",
@@ -108,7 +112,7 @@ def main():
     global DESKTOP_IDS
     if args.desktops is not None:
         DESKTOP_IDS = []  # Because we overwrite the default list
-        for a in list(set((args.desktops).split(","))):
+        for a in listify(args.desktops):
             a = a.strip()
             if a not in DESKTOP_IDS:
                 DESKTOP_IDS.append(a)
@@ -116,14 +120,13 @@ def main():
     global EXCEPTIONS
     if args.exceptions is not None:
         first_char = "."
-        assert all((ext.startswith(first_char) for ext in SHORTCUT_EXTENSIONS))
 
         def without_ext(x):
             return first_char.join(x.split(first_char)[:-1])
 
-        for a in list(set((args.exceptions).split(","))):
+        for a in listify(args.exceptions):
             a = a.strip()
-            unambiguous = a.split(first_char)[-1] in SHORTCUT_EXTENSIONS
+            unambiguous = a.split(first_char)[-1] in listify(args.extensions)
             potentially_ambiguous = not unambiguous
             if potentially_ambiguous:
                 for exception in EXCEPTIONS:
@@ -148,9 +151,9 @@ def main():
             full_path = os.path.join(desktop_path, f)
             if any((os.path.islink(full_path), os.path.isdir(full_path))):
                 continue
-            if not any((f.endswith(ext) for ext in SHORTCUT_EXTENSIONS)):
+            if not any((f.endswith(ext) for ext in listify(args.extensions))):
                 continue
-            if is_in_exceptions(f):
+            if is_in_exceptions(f, listify(args.extensions)):
                 continue
             remove_file(full_path)
             removed.append(f)
@@ -161,6 +164,17 @@ def main():
             for f in removed:
                 print(f'- "{os.path.join(desktop_path, f)}"')
             print()
+
+
+def listify(delimited_str, unique=True, allow_empty=False, delimiter=","):
+    """For a delimited string, return a list of its elements.
+
+    If "unique" is True, omits identical elements from the output.
+    If "allow_empty" is False, omits empty elements from the output.
+    """
+    fn_set = lambda x: set(x) if unique else x
+    fn_filter = lambda x: x if allow_empty else filter(None, x)
+    return list(fn_set(fn_filter(delimited_str.split(delimiter))))
 
 
 def remove_file(f):
