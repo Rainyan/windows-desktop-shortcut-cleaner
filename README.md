@@ -8,6 +8,18 @@ A lot of Windows apps will create shortcuts on the desktop without asking the us
 * Python 3.10 or newer
 
 # Installation
+Using [uv](https://github.com/astral-sh/uv):
+```cmd
+REM Installation
+uv tool install "git+https://github.com/Rainyan/windows-desktop-shortcut-cleaner"
+
+REM Running
+scleaner
+
+REM Updating
+uv tool update scleaner
+```
+
 Using [pipx](https://github.com/pypa/pipx):
 ```cmd
 REM Installation
@@ -37,7 +49,7 @@ git pull
 # Usage
 For a simple dry-run (doesn't delete anything), simply run the app.
 
-If you installed with pipx, the command is `scleaner`.
+If you installed with *uv* or *pipx*, the command is `scleaner`.
 
 If you're using the script version, run the script with `python src\cleaner.py` (or `python3`, if `python` doesn't work for your environment).
 
@@ -52,6 +64,13 @@ If you don't want to delete specific shortcuts, add them to your exceptions list
 ```cmd
 >scleaner --exceptions "ALVR,Mingw haskell shell"
 ```
+
+By default, only `.lnk` shortcuts are detected. If you also wish to detect `.url` shortcuts, adjust the `-E/--extensions` argument:
+```cmd
+>scleaner --exceptions "ALVR,Mingw haskell shell" --extensions "lnk,url"
+```
+An arbitrary comma-delimited list of file extensions is supported. Note that the initial `.` dot character of the extension is always implied
+and you shouldn't add one. For example, this would be incorrect: `-E .foo` (results in `..foo`). Use `-E foo` instead.
 
 Once you're happy with the dry-run output, you can delete the files for real with the `-f` flag:
 ```cmd
@@ -68,11 +87,16 @@ options:
   -h, --help            show this help message and exit
   -f, --no-dry-run      permanently delete the matching files (instead of dry-run). default: false
   -V, --verbose         whether to print additional debug information. default: false
-  -d DESKTOPS, --desktops DESKTOPS
+  -d, --desktops DESKTOPS
                         comma-delimited list of desktop identifiers to use. default: Desktop,PublicDesktop
-  -e EXCEPTIONS, --exceptions EXCEPTIONS
-                        comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default:
-                        empty list
+  -e, --exceptions EXCEPTIONS
+                        comma-delimited list of shortcuts never to be deleted, with file extension being optional
+                        unless ambiguous. default: empty list
+  -E, --extensions EXTENSIONS
+                        comma-delimited list of file extensions to consider as shortcut files, for example: "lnk,url"
+                        default: lnk Note that the extensions should *not* include the "." dot character since it is
+                        always implied, and doing so would result in double dot: "..ext" which is likely not what you
+                        want.
   --print-my-desktop-dir
                         outputs the user's desktop directory to stdout and exits
 ```
@@ -100,6 +124,8 @@ This example is using the pythonw interpreter, instead of the pipx binary.
 # Set your python path and the script path here.
 # Note that you can use "pythonw" instead of "python" in Windows
 # to prevent the console window popup for background tasks.
+# For a uv setup, you may with to rename the file to .pyw if relevant:
+# https://docs.astral.sh/uv/guides/scripts/#using-gui-scripts
 $action = New-ScheduledTaskAction `
   -Execute "$env:LOCALAPPDATA\Programs\Python\Python311\pythonw.exe" `
   -WorkingDirectory "$env:USERPROFILE\code\windows-desktop-shortcut-cleaner\src" `
@@ -127,7 +153,7 @@ If you'd prefer a graphical user interface, you can instead use the *Task Schedu
 ## Contributing
 PRs welcome!
 
-* Please format your code with [black](https://github.com/psf/black).
+* Please format your code with [black](https://github.com/psf/black) (or [ruff](https://github.com/astral-sh/ruff) in a Black-compatible mode).
   * The `src/thirdparty` directory is exempt from this rule.
 * If you're making substantial changes, please open an issue for discussing them before submitting a patch.
 

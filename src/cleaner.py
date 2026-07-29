@@ -24,7 +24,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import thirdparty.knownpaths as kp
 
 import argparse
@@ -40,10 +39,16 @@ DESKTOP_IDS = ["Desktop", "PublicDesktop"]
 # Never delete shortcuts with these names
 EXCEPTIONS = []
 
+FIRST_CHAR_OF_EXT = "."
 
-def is_in_exceptions(x):
-    """Return whether x (sans .lnk extension, case insensitive) is in EXCEPTIONS"""
-    return x.split(".lnk")[0].lower() in (a.lower() for a in EXCEPTIONS)
+
+def is_in_exceptions(x, extensions):
+    """Return whether x (sans extension(s), case insensitive) is in EXCEPTIONS"""
+    for exception in EXCEPTIONS:
+        for ext in extensions:
+            if x.split(f"{FIRST_CHAR_OF_EXT}{ext}")[0].lower() in exception.lower():
+                return True
+    return False
 
 
 def get_known_path(folderid):
@@ -79,7 +84,15 @@ def main():
     parser.add_argument(
         "-e",
         "--exceptions",
-        help="comma-delimited list of shortcuts never to be deleted, without the .lnk extension. default: empty list",
+        help="comma-delimited list of shortcuts never to be deleted, with file extension being optional unless ambiguous. default: empty list",
+    )
+    parser.add_argument(
+        "-E",
+        "--extensions",
+        help='comma-delimited list of file extensions to consider as shortcut files, for example: "lnk,url" default: lnk '
+        'Note that the extensions should *not* include the "." dot character since it is always implied, and doing so would '
+        'result in double dot: "..ext" which is likely not what you want.',
+        default="lnk",
     )
     parser.add_argument(
         "--print-my-desktop-dir",
@@ -103,20 +116,31 @@ def main():
     global DESKTOP_IDS
     if args.desktops is not None:
         DESKTOP_IDS = []  # Because we overwrite the default list
-        for a in list(set((args.desktops).split(","))):
+        for a in listify(args.desktops):
             a = a.strip()
-            if not a in DESKTOP_IDS:
+            if a not in DESKTOP_IDS:
                 DESKTOP_IDS.append(a)
 
+    extensions = listify(args.extensions)
     global EXCEPTIONS
     if args.exceptions is not None:
-        for a in list(set((args.exceptions).split(","))):
+
+        def without_ext(x):
+            return FIRST_CHAR_OF_EXT.join(x.split(FIRST_CHAR_OF_EXT)[:-1])
+
+        for a in listify(args.exceptions):
             a = a.strip()
-            assert not a.endswith(
-                ".lnk"
-            ), "Please don't include the .lnk extension to the exception name"
-            if not a in EXCEPTIONS:
-                EXCEPTIONS.append(a)
+            unambiguous = a.split(FIRST_CHAR_OF_EXT)[-1] in extensions
+            potentially_ambiguous = not unambiguous
+            if potentially_ambiguous:
+                for exception in EXCEPTIONS:
+                    if without_ext(a) == "":
+                        continue
+                    assert without_ext(a) != without_ext(exception), (
+                        f'"{a}" is ambiguous with "{exception}", '
+                        "please exclude with file extension included"
+                    )
+            EXCEPTIONS.append(a)
 
     desktop_paths = [get_known_path(a) for a in DESKTOP_IDS]
     assert all(os.path.isdir(a) for a in desktop_paths)
@@ -133,11 +157,11 @@ def main():
             full_path = os.path.join(desktop_path, f)
             if any((os.path.islink(full_path), os.path.isdir(full_path))):
                 continue
-            if not f.endswith(".lnk"):
+            if not any((f.endswith(ext) for ext in extensions)):
                 continue
-            if is_in_exceptions(f):
+            if is_in_exceptions(f, extensions):
                 continue
-            remove_file(full_path)
+            remove_file(full_path, extensions)
             removed.append(f)
         if VERBOSE:
             print(
@@ -148,13 +172,32 @@ def main():
             print()
 
 
-def remove_file(f):
+def listify(delimited_str, unique=True, allow_empty=False, delimiter=","):
+    """For a delimited string, return a list of its elements.
+
+    If "unique" is True, omits identical elements from the output.
+    If "allow_empty" is False, omits empty elements from the output.
+    """
+
+    def fn_set(x):
+        return set(x) if unique else x
+
+    def fn_filter(x):
+        return x if allow_empty else filter(None, x)
+
+    return list(fn_set(fn_filter(delimited_str.split(delimiter))))
+
+
+def remove_file(path, allowed_file_extensions):
     """Remove a file, with optional dry_run option for debug"""
-    assert os.path.isfile(f)
+    assert os.path.isfile(path)
+    for ext in allowed_file_extensions:
+        assert len(ext) > 0
+    assert any((path.endswith(ext) for ext in allowed_file_extensions))
     if DRY_RUN:
-        print(f'[Dry-run] Would remove: "{f}"')
+        print(f'[Dry-run] Would remove: "{path}"')
         return
-    os.remove(f)
+    os.remove(path)
 
 
 if __name__ == "__main__":
